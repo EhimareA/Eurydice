@@ -1,0 +1,87 @@
+from datetime import datetime
+from io import open_code
+from typing import Text
+import pyttsx3 
+import speech_recognition as sr
+import pyaudio
+import subprocess
+import webbrowser
+import os
+import random
+
+engine = pyttsx3.init('sapi5')
+voices = engine.getProperty('voices')
+engine.setProperty('voice', voices[1].id)
+
+def speak(audio):
+    engine.say(audio)
+    engine.runAndWait()
+
+def hear_audio():
+    r = sr.Recognizer()
+    while True:
+        with sr.Microphone() as source:
+            print("Eurydice: Listening...")
+            audio=r.listen(source)
+            talk = ""
+            try:
+                talk = r.recognize_google(audio)
+                print(talk)
+            except Exception as x:
+                print("Exception: " + str(x))
+
+        return talk 
+
+
+def say_my_name():
+    speak("Hi, my name is Eurydice")
+
+
+def hello():
+    speak (random.choice (["Hi, how're you?", "Hey, what's up", "what's new for you today?", "Hi, what do you need me to do for you?"]))
+
+##List of Moods and Feelings: Sad, Hungry, Happy, Angry, 
+
+def main():
+    while True:
+        query = hear_audio()
+        
+        if "name" in query:
+            say_my_name()
+            continue
+
+        if "hello" in query:
+            hello()
+
+        elif "okay" in query:
+            speak("That's great to hear")
+        elif "Google" in query:
+            webbrowser.open('http://google.com')
+        elif "cs50" in query:
+            webbrowser.open('https://ide.cs50.io/')
+        elif "Steam" in query:
+            webbrowser.open('https://store.steampowered.com/')
+
+        ## List of emotional responses:
+        ## Sad, Hungry, Funny, Nostalgic
+
+        ##What if I want to feel happy for a bit because I'm feeling down?
+        elif "Sad" or "Unhappy" or "Not feeling great" in query:
+            feelgood = ["https://www.youtube.com/watch?v=AzV4G_tTI5I", "http://weavesilk.com/", "https://soundcloud.com/hasoyi"]
+            link = webbrowser.open(random.choice(feelgood))
+            print(link)
+        #elif not "Sad" or "Unhappy" or "Not feeling great" in query:
+            #print(False)
+            
+
+        elif True in [("Hungry" in query, "Peckish" in query, "Starving" in query, "Famished" in query)]:
+            sparklingwine = ["https://www.bonappetit.com/basically", "https://www.epicurious.com/", "https://www.foodpairing.com/en/home"]
+            chain = webbrowser.open(random.choice(sparklingwine))
+            print(chain)
+
+        if 'stop' in query:
+            exit()
+
+
+if __name__ == 'main':
+    main() 
